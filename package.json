@@ -33,7 +33,9 @@
     "husky": "0.14.3",
     "mocha": "4.0.1",
     "nyc": "11.2.1",
-    "webpack": "^3.6.0"
+    "webpack": "^3.8.1",
+    "webpack-merge": "^4.1.0",
+    "webpack-toolkit": "^1.0.0"
   },
   "peerDependencies": {
     "webpack": ">= 2"
@@ -44,7 +46,7 @@
     "commitmsg": "cz-customizable-ghooks",
     "lint": "eslint .",
     "precommit": "yarn run lint",
-    "test": "nyc --check-coverage mocha test/*.test.js"
+    "test": "nyc --check-coverage mocha lib/**/__tests__/*.test.js"
   },
   "config": {
     "commitizen": {

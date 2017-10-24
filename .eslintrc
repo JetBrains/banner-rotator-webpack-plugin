@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "extends": [
+    "@kisenka/eslint-config"
+  ],
+  "rules": {
+    "dot-location": ["error", "property"],
+    "func-names": "off"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "webpack-banner-rotator-plugin",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [
+    "banner",
+    "rotator",
+    "webpack",
+    "plugin"
+  ],
+  "license": "MIT",
+  "author": "kisenka <qtuzov@gmail.com>",
+  "homepage": "https://github.com/kisenka/banner-rotator-webpack-plugin#readme",
+  "bugs": "https://github.com/kisenka/banner-rotator-webpack-plugin/issues",
+  "repository": "kisenka/banner-rotator-webpack-plugin",
+  "main": "lib/plugin.js",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "deepmerge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@kisenka/eslint-config": "0.0.2",
+    "chai": "4.1.2",
+    "clean-webpack-plugin": "^0.1.17",
+    "commitizen": "2.9.6",
+    "cz-customizable": "5.2.0",
+    "cz-customizable-ghooks": "1.5.0",
+    "eslint": "4.8.0",
+    "husky": "0.14.3",
+    "mocha": "4.0.1",
+    "nyc": "11.2.1",
+    "webpack": "^3.6.0"
+  },
+  "peerDependencies": {
+    "webpack": ">= 2"
+  },
+  "scripts": {
+    "build": "rm -rf build && webpack",
+    "commit": "git-cz",
+    "commitmsg": "cz-customizable-ghooks",
+    "lint": "eslint .",
+    "precommit": "yarn run lint",
+    "test": "nyc --check-coverage mocha test/*.test.js"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": ".commitizen.config.js"
+    }
+  }
+}

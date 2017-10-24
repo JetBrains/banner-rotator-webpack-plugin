@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@kisenka/eslint-config/test",
+    "./.eslintrc"
+  ]
+}

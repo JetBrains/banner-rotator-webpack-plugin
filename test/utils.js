@@ -3,7 +3,7 @@ const path = require('path');
 const webpackMerge = require('webpack-merge');
 const { InMemoryCompiler, createCachedInputFileSystem } = require('webpack-toolkit');
 
-const fixturesPath = path.resolve(__dirname, 'fixtures');
+const FIXTURES_PATH = path.resolve(__dirname, 'fixtures');
 
 /**
  * @param {Object} [config]
@@ -11,7 +11,7 @@ const fixturesPath = path.resolve(__dirname, 'fixtures');
  */
 function createCompiler(config = {}) {
   const cfg = webpackMerge({
-    context: fixturesPath
+    context: FIXTURES_PATH
   }, config);
 
   const inputFS = createCachedInputFileSystem();
@@ -33,3 +33,4 @@ function compileAndNotReject(config) {
 module.exports.createCompiler = createCompiler;
 module.exports.compile = compile;
 module.exports.compileAndNotReject = compileAndNotReject;
+module.exports.FIXTURES_PATH = FIXTURES_PATH;

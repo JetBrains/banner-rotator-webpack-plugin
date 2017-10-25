@@ -1,4 +1,5 @@
 import parseDate from './utils/parse-date';
+import * as matchers from './utils/matchers';
 
 function normalizeDate(date) {
   return typeof date === 'string' ? parseDate(date) : date;
@@ -40,14 +41,7 @@ export default class BannerConfig {
    * @return {boolean}
    */
   matchDate(date = new Date()) {
-    const start = this.startDate;
-    const end = this.endDate;
-    const time = date.getTime();
-    const startTime = start && start.getTime();
-    const endTime = end && end.getTime();
-    const greaterThanStart = startTime ? time >= startTime : true;
-    const lessThanEnd = endTime ? time <= endTime : true;
-    return greaterThanStart && lessThanEnd;
+    return matchers.date(this.startDate, this.endDate, date);
   }
 
   /**
@@ -59,7 +53,7 @@ export default class BannerConfig {
     if (!this.locations) {
       return true;
     }
-    return this.locations.some(loc => loc === location);
+    return matchers.location(this.locations, location);
   }
 
   /**
@@ -70,7 +64,7 @@ export default class BannerConfig {
     if (!this.countries) {
       return true;
     }
-    return this.countries.includes(code);
+    return matchers.country(this.countries, code);
   }
 
   /**

@@ -29,14 +29,14 @@ export default class BannerRotator {
    * @return {Promise<Array<Banner>>}
    */
   run() {
-    const contextInfo = {
+    const context = {
       date: new Date(),
       location: window.location.pathname,
       countryCode: this.config.countryCode
     };
 
-    const banners = this.getMatchedBanners(contextInfo);
-    return Promise.all(banners.map(b => b.load(contextInfo)));
+    const banners = this.getMatchedBanners(context);
+    return Promise.all(banners.map(b => b.load(context)));
   }
 
   /**

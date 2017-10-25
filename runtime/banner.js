@@ -4,11 +4,11 @@ import Events from './events';
 export default class Banner {
   /**
    * @param {BannerConfig} config
-   * @param {Object} [contextInfo]
+   * @param {Object} [context]
    */
-  constructor(config, contextInfo) {
+  constructor(config, context) {
     this.config = config;
-    this.contextInfo = contextInfo;
+    this.context = context;
   }
 
   close() {

@@ -74,15 +74,15 @@ export default class BannerConfig {
   }
 
   /**
-   * @param {Object} contextInfo
+   * @param {Object} context
    * @return {Promise<Banner>}
    */
-  load(contextInfo) {
+  load(context) {
     return this._config.load().then(module => {
       const ModuleExport = typeof module.default === 'function' ? module.default : module;
       return typeof ModuleExport.create === 'function'
-        ? ModuleExport.create(this, contextInfo)
-        : new ModuleExport(this, contextInfo);
+        ? ModuleExport.create(this, context)
+        : new ModuleExport(this, context);
     }).then(m => {
       this.instance = m;
       return m;

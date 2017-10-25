@@ -18,7 +18,8 @@
     "lib"
   ],
   "dependencies": {
-    "deepmerge": "^2.0.0"
+    "deepmerge": "^2.0.0",
+    "escape-string-regexp": "^1.0.5"
   },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",

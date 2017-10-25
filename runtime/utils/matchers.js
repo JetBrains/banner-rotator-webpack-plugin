@@ -1,4 +1,6 @@
 /* eslint-disable no-shadow */
+import globToMatcher from './glob-to-matcher';
+
 /**
  * @param {Date} rangeStart
  * @param {Date} rangeEnd
@@ -20,7 +22,17 @@ export function date(rangeStart, rangeEnd, date) {
  * @return {boolean}
  */
 export function location(locations, location) {
-  return locations.some(loc => loc === location);
+  const satisfiesNegations = locations
+    .filter(loc => loc.charAt(0) === '!')
+    .map(loc => globToMatcher(loc))
+    .every(matcher => matcher(location));
+
+  const satisfiesNonNegations = locations
+    .filter(loc => loc.charAt(0) !== '!')
+    .map(loc => globToMatcher(loc))
+    .some(matcher => matcher(location));
+
+  return satisfiesNegations && satisfiesNonNegations;
 }
 
 /**

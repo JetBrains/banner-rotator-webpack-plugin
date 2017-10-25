@@ -18,9 +18,7 @@
     "lib"
   ],
   "dependencies": {
-    "deepmerge": "^2.0.0",
-    "js-stringify": "^1.0.2",
-    "unquote": "^1.1.0"
+    "deepmerge": "^2.0.0"
   },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",

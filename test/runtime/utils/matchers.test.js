@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions,no-magic-numbers */
-import * as matchers from '../matchers';
+import * as matchers from 'webpack-banner-rotator-plugin/runtime/utils/matchers';
 
 describe('matchers', () => {
   describe('date()', () => {

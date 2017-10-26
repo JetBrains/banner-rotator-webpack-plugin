@@ -1,4 +1,4 @@
-import globToMatcher from '../glob-to-matcher';
+import globToMatcher from 'webpack-banner-rotator-plugin/runtime/utils/glob-to-matcher';
 
 const CASES = [
   {

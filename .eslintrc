@@ -7,6 +7,9 @@
     "dot-location": ["error", "property"],
     "func-names": "off"
   },
+  "settings": {
+    "import/resolver": "webpack"
+  },
   "overrides": [
     {
       "files": "runtime/{*,**/*}.js",
@@ -15,7 +18,7 @@
       }
     },
     {
-      "files": "{*,**}/__tests__/*.test.js",
+      "files": "test/{*,**}/*.test.js",
       "env": {
         "mocha": true
       },

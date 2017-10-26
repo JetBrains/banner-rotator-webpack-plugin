@@ -25,7 +25,6 @@ export default class BannerConfig {
     this.locations = locations;
     this.countries = countries;
     this.data = data;
-    this.instance = null;
 
     if (typeof startDate !== 'undefined') {
       this.startDate = normalizeDate(startDate);
@@ -77,9 +76,6 @@ export default class BannerConfig {
       return typeof ModuleExport.create === 'function'
         ? ModuleExport.create(this, context)
         : new ModuleExport(this, context);
-    }).then(m => {
-      this.instance = m;
-      return m;
     });
   }
 }

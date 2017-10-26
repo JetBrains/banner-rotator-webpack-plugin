@@ -19,7 +19,8 @@
   ],
   "dependencies": {
     "deepmerge": "^2.0.0",
-    "escape-string-regexp": "^1.0.5"
+    "escape-string-regexp": "^1.0.5",
+    "url-slug": "^2.0.0"
   },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",

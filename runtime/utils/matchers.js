@@ -22,15 +22,21 @@ export function date(rangeStart, rangeEnd, date) {
  * @return {boolean}
  */
 export function location(locations, location) {
-  const satisfiesNegations = locations
+  const negationMatchers = locations
     .filter(loc => loc.charAt(0) === '!')
-    .map(loc => globToMatcher(loc))
-    .every(matcher => matcher(location));
+    .map(loc => globToMatcher(loc));
 
-  const satisfiesNonNegations = locations
+  const nonNegationMatchers = locations
     .filter(loc => loc.charAt(0) !== '!')
-    .map(loc => globToMatcher(loc))
-    .some(matcher => matcher(location));
+    .map(loc => globToMatcher(loc));
+
+  const satisfiesNegations = negationMatchers.length > 0
+    ? negationMatchers.every(matcher => matcher(location))
+    : true;
+
+  const satisfiesNonNegations = nonNegationMatchers.length > 0
+    ? nonNegationMatchers.some(matcher => matcher(location))
+    : true;
 
   return satisfiesNegations && satisfiesNonNegations;
 }

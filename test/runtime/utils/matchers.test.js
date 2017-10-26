@@ -15,6 +15,7 @@ describe('matchers', () => {
     const location = matchers.location;
 
     it('should properly match multiple patterns', () => {
+      location(['!/index.html'], '/foo/').should.be.true;
       location(['*', '!/index.html'], '/index.html').should.be.false;
       location(['*', '!/foo/*'], '/foo').should.be.true;
       location(['*', '!/foo/*'], '/foo/').should.be.false;

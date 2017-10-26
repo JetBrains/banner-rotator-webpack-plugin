@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers */
 const path = require('path');
 
-const Generator = require('../runtime-generator');
+const Generator = require('../../lib/runtime-generator');
 
 describe('runtime-generator', () => {
   describe('#prop()', () => {

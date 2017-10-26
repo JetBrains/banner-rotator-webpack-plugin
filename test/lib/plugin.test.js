@@ -1,8 +1,13 @@
-const { LOADER_PATH, RUNTIME_MODULE_PATH, BANNERS_PLACEHOLDER } = require('../config');
+const webpackMerge = require('webpack-merge');
 
-const Plugin = require('../plugin');
+const { LOADER_PATH, RUNTIME_MODULE_PATH, BANNERS_PLACEHOLDER } = require('../../lib/config');
+const webpackConfig = require('../../webpack.config');
+const Plugin = require('../../lib/plugin');
+const utils = require('../utils');
 
-const { createCompiler, compile } = require('../../test/utils');
+const { createCompiler } = utils;
+
+const compile = config => utils.compile(webpackMerge(webpackConfig, config));
 
 describe('plugin', () => {
   describe('#normalizeConfig()', () => {

@@ -6,14 +6,15 @@ import ClosedBannersStorage from './closed-banners-storage';
 
 const defaultConfig = {
   countryCode: null,
-  closedBannersStorageKey: 'banner-rotator-closed-banners'
+  closedBannersStorage: ClosedBannersStorage
 };
 
 export default class BannerRotator {
   constructor(config = {}) {
     this.config = merge(defaultConfig, config);
 
-    this.closedBannersStorage = new ClosedBannersStorage(this.config.closedBannersStorageKey);
+    // eslint-disable-next-line new-cap
+    this.closedBannersStorage = new this.config.closedBannersStorage();
 
     const banners = Array.isArray(config.banners)
       ? config.banners

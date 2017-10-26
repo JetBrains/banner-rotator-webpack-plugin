@@ -1,6 +1,6 @@
 export default class ClosedBannersStorage {
-  constructor(key) {
-    this.storageKey = key;
+  constructor() {
+    this.storageKey = 'banner-rotator-closed-banners';
 
     if (this.get() === null) {
       this.set([]);

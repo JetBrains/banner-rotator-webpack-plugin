@@ -1,3 +1,6 @@
+/**
+ * window.localStorage based storage to keep info about closed banners.
+ */
 export default class ClosedBannersStorage {
   constructor() {
     this.storageKey = 'banner-rotator-closed-banners';
@@ -23,11 +26,17 @@ export default class ClosedBannersStorage {
     return idsArray.join(',');
   }
 
+  /**
+   * @api
+   */
   has(bannerId) {
     const val = this.get();
     return val && val.includes(bannerId);
   }
 
+  /**
+   * @api
+   */
   add(bannerId) {
     const ids = this.get();
     ids.push(bannerId);

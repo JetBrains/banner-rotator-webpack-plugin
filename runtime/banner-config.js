@@ -1,5 +1,6 @@
 import parseDate from './utils/parse-date';
-import * as matchers from './utils/matchers';
+import isRangeContainsDate from './utils/is-range-contains-date';
+import globMatcher from './utils/glob-matcher';
 
 function normalizeDate(date) {
   return typeof date === 'string' ? parseDate(date) : date;
@@ -40,11 +41,10 @@ export default class BannerConfig {
    * @return {boolean}
    */
   matchDate(date = new Date()) {
-    return matchers.date(this.startDate, this.endDate, date);
+    return isRangeContainsDate(this.startDate, this.endDate, date);
   }
 
   /**
-   * TODO glob or regexp support?
    * @param {string} location
    * @return {boolean}
    */
@@ -52,7 +52,7 @@ export default class BannerConfig {
     if (!this.locations) {
       return true;
     }
-    return matchers.location(this.locations, location);
+    return globMatcher(this.locations, location);
   }
 
   /**
@@ -63,7 +63,7 @@ export default class BannerConfig {
     if (!this.countries) {
       return true;
     }
-    return matchers.country(this.countries, code);
+    return this.countries.includes(code);
   }
 
   /**

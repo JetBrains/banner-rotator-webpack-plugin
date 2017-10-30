@@ -15,7 +15,8 @@
   "repository": "kisenka/banner-rotator-webpack-plugin",
   "main": "lib/plugin.js",
   "files": [
-    "lib"
+    "lib",
+    "runtime"
   ],
   "dependencies": {
     "deepmerge": "^2.0.0",

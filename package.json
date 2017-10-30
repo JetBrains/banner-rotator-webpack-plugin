@@ -20,6 +20,7 @@
   "dependencies": {
     "deepmerge": "^2.0.0",
     "escape-string-regexp": "^1.0.5",
+    "slash": "^1.0.0",
     "url-slug": "^2.0.0"
   },
   "devDependencies": {

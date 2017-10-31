@@ -16,10 +16,12 @@ export default class BannerRotator {
       ? config.banners
       : __BANNER_ROTATOR_BANNERS_CONFIG__; // eslint-disable-line no-undef
 
-    this.banners = banners.map(banner => {
+    banners.forEach(banner => {
       banner.startDate = banner.startDate ? parseDate(banner.startDate) : null;
       banner.endDate = banner.endDate ? parseDate(banner.endDate) : null;
     });
+
+    this.banners = banners;
 
     this.handleBannerClose = this.handleBannerClose.bind(this);
     window.addEventListener(this.config.closeEventName, this.handleBannerClose);

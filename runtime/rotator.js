@@ -1,11 +1,10 @@
 import merge from 'deepmerge';
 
-import Events from './events';
-import BannerConfig from './banner-config';
 import ClosedBannersStorage from './closed-banners-storage';
+import { isRangeContainsDate, globMatcher, parseDate } from './utils';
 
 const defaultConfig = {
-  countryCode: null,
+  closeEventName: 'webpack-banner-rotator-banner-close',
   closedBannersStorage: new ClosedBannersStorage()
 };
 
@@ -13,31 +12,35 @@ export default class BannerRotator {
   constructor(config = {}) {
     this.config = merge(defaultConfig, config);
 
-    // eslint-disable-next-line new-cap
-    this.closedBannersStorage = this.config.closedBannersStorage;
-
     const banners = Array.isArray(config.banners)
       ? config.banners
       : __BANNER_ROTATOR_BANNERS_CONFIG__; // eslint-disable-line no-undef
 
-    this.banners = banners.map(cfg => new BannerConfig(cfg));
+    this.banners = banners.map(banner => {
+      banner.startDate = banner.startDate ? parseDate(banner.startDate) : null;
+      banner.endDate = banner.endDate ? parseDate(banner.endDate) : null;
+    });
 
-    this._handleBannerClose = this._handleBannerClose.bind(this);
-    window.addEventListener(Events.BANNER_CLOSE, this._handleBannerClose);
+    this.handleBannerClose = this.handleBannerClose.bind(this);
+    window.addEventListener(this.config.closeEventName, this.handleBannerClose);
   }
 
   /**
    * @return {Promise<Array<Banner>>}
    */
-  run() {
-    const context = {
+  run(context = {}) {
+    const ctx = merge({
       date: new Date(),
-      location: window.location.pathname,
-      countryCode: this.config.countryCode
-    };
+      location: window.location.pathname
+    }, context);
 
-    const banners = this.getMatchedBanners(context);
-    return Promise.all(banners.map(b => b.load(context)));
+    const banners = this.getMatchedBanners(ctx);
+    const promises = banners.map(banner => banner.load()
+      .then(module => banner.module = module) // eslint-disable-line no-return-assign
+      .then(() => banner)
+    );
+
+    return Promise.all(promises);
   }
 
   /**
@@ -45,25 +48,33 @@ export default class BannerRotator {
    * @param {Date} [criteria.date]
    * @param {string} [criteria.location]
    * @param {string} [criteria.countryCode]
-   * @return {Array<BannerConfig>}
+   * @return {Array<Banner>}
    */
   getMatchedBanners(criteria = {}) {
-    const {
-      date = new Date(),
-      location = window.location.pathname,
-      countryCode = this.config.countryCode
-    } = criteria;
+    return this.banners.filter(banner => {
+      const { startDate, endDate, locations, countries } = banner;
 
-    return this.banners.filter(banner => (
-      banner.matchDate(date) &&
-      banner.matchLocation(location) &&
-      banner.matchCountryCode(countryCode) &&
-      !this.isBannerWasClosed(banner.id)
-    ));
+      const wasClosed = this.isBannerWasClosed(banner.id);
+      const matchDate = isRangeContainsDate(startDate, endDate, criteria.date);
+
+      const matchLocation = locations && criteria.location
+        ? globMatcher(locations, criteria.location)
+        : true;
+
+      const matchCountry = countries && criteria.countryCode
+        ? countries.includes(criteria.countryCode)
+        : true;
+
+      return matchDate && matchLocation && matchCountry && !wasClosed;
+    });
   }
 
+  /**
+   * @param {string} bannerId
+   * @return {boolean}
+   */
   isBannerWasClosed(bannerId) {
-    return this.closedBannersStorage.has(bannerId);
+    return this.config.closedBannersStorage.has(bannerId);
   }
 
   /**
@@ -71,10 +82,10 @@ export default class BannerRotator {
    * @param {string} e.detail banner id
    * @private
    */
-  _handleBannerClose(e) {
+  handleBannerClose(e) {
     const bannerId = e.detail;
     if (!this.isBannerWasClosed(bannerId)) {
-      this.closedBannersStorage.add(bannerId);
+      this.config.closedBannersStorage.add(bannerId);
     }
   }
 }

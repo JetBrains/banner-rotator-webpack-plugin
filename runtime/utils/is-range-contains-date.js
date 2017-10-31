@@ -1,6 +1,6 @@
 /**
- * @param {Date} rangeStart
- * @param {Date} rangeEnd
+ * @param {Date} [rangeStart]
+ * @param {Date} [rangeEnd]
  * @param {Date} date
  * @return {boolean}
  */

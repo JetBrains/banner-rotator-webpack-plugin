@@ -70,7 +70,7 @@ export function createMultipleMatcher(patterns) {
  * @return {boolean}
  */
 export default function (pattern, input) {
-  const multiple = Array.isArray(input);
-  const matcher = multiple ? createMultipleMatcher(input) : createMatcher(input);
+  const multiple = Array.isArray(pattern);
+  const matcher = multiple ? createMultipleMatcher(pattern) : createMatcher(pattern);
   return matcher(input);
 }

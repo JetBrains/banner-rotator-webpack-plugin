@@ -15,18 +15,6 @@ const { createCompiler } = utils;
 const compile = config => utils.compile(webpackMerge(webpackConfig, config));
 
 describe('plugin', () => {
-  describe('constructor()', () => {
-    it('should throw if banners not specified', () => {
-      (() => new Plugin()).should.throw();
-    });
-
-    it('should normalize banners config', () => {
-      const input = { banners: [{ entry: './q' }] };
-      const expected = { banners: [{ entry: './q', id: 'q' }] };
-      Plugin.prepareConfig(input).should.deep.equal(expected);
-    });
-  });
-
   describe('prepare()', () => {
     it('should properly add custom loader rules', () => {
       const compiler = createCompiler({ entry: './test-banner' })._compiler;
@@ -46,6 +34,7 @@ describe('plugin', () => {
       });
 
       assets['main.js'].source().should.not.contain(BANNERS_PLACEHOLDER);
+      assets.should.contain.property('0.js');
     });
   });
 });

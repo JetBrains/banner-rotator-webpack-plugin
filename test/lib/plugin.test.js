@@ -12,29 +12,59 @@ const utils = require('../utils');
 
 const { createCompiler } = utils;
 
-const compile = config => utils.compile(webpackMerge(webpackConfig, config));
+const compile = config => {
+  const merged = webpackMerge(webpackConfig, { entry: './entry' }, config);
+  return utils.compile(merged);
+};
 
 describe('plugin', () => {
   describe('prepare()', () => {
     it('should properly add custom loader rules', () => {
       const compiler = createCompiler({ entry: './test-banner' })._compiler;
       Plugin.addLoaderForRuntime(compiler);
-      compiler.options.module.rules[0].loader.should.be.equal(LOADER_PATH);
-      compiler.options.module.rules[0].test.should.be.equal(RUNTIME_MODULE_PATH);
+      const [rule] = compiler.options.module.rules;
+      rule.loader.should.be.equal(LOADER_PATH);
+      rule.test.should.be.equal(RUNTIME_MODULE_PATH);
     });
   });
 
   describe('apply()', () => {
-    it('should replace banners placeholder', async () => {
-      const banners = [{ entry: './banners/test-banner' }];
+    const banners = [{ entry: './banners/test-banner' }];
+
+    it('should replace banners placeholder and create lazy chunk', async () => {
+      const expectedChunkId = '0';
+      const expectedChunkFilename = `${expectedChunkId}.js`;
 
       const { assets } = await compile({
-        entry: './entry',
-        plugins: [new Plugin({ banners })]
+        plugins: [
+          new Plugin({ banners })
+        ]
       });
 
-      assets['main.js'].source().should.not.contain(BANNERS_PLACEHOLDER);
-      assets.should.contain.property('0.js');
+      assets['main.js'].source().should
+        .contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`)
+        .and.not.contain(BANNERS_PLACEHOLDER);
+
+      assets.should.contain.property(expectedChunkFilename);
+      assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);
+    });
+
+    it('should allow to override banner chunk id', async () => {
+      const expectedChunkId = 'banners/0';
+      const expectedChunkFilename = `${expectedChunkId}.js`;
+
+      const { assets } = await compile({
+        plugins: [
+          new Plugin({
+            banners,
+            chunkId: 'banners/[id]'
+          })
+        ]
+      });
+
+      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`);
+      assets.should.contain.property(expectedChunkFilename);
+      assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);
     });
   });
 });

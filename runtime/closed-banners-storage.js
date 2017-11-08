@@ -3,7 +3,7 @@
  */
 export default class ClosedBannersStorage {
   constructor() {
-    this.storageKey = 'banner-rotator-closed-banners';
+    this.storageKey = 'webpack-banner-rotator-closed-banners';
 
     if (this.get() === null) {
       this.set([]);
@@ -31,7 +31,7 @@ export default class ClosedBannersStorage {
    */
   has(bannerId) {
     const val = this.get();
-    return val && val.includes(bannerId);
+    return Array.isArray(val) ? val.includes(bannerId) : false;
   }
 
   /**
@@ -48,7 +48,19 @@ export default class ClosedBannersStorage {
    */
   get() {
     const rawValue = window.localStorage.getItem(this.storageKey);
-    return rawValue !== null ? ClosedBannersStorage.parse(rawValue) : null;
+    const isNull = rawValue === null;
+    const isEmpty = rawValue === '';
+    let value;
+
+    if (isNull) {
+      value = null;
+    } else if (!isNull && isEmpty) {
+      value = [];
+    } else {
+      value = ClosedBannersStorage.parse(rawValue);
+    }
+
+    return value;
   }
 
   /**

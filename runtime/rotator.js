@@ -1,44 +1,46 @@
-import merge from 'deepmerge';
+import merge from 'merge-options';
 
 import ClosedBannersStorage from './closed-banners-storage';
 import { isRangeContainsDate, globMatcher, parseDate } from './utils';
 
+/**
+ * @typedef {Object} BannerRotatorContext
+ * @property {Date} date
+ * @property {string} location
+ * @property {string} countryCode
+ */
+
 const defaultConfig = {
+  banners: undefined,
   closeEventName: 'webpack-banner-rotator-banner-close',
-  closedBannersStorage: new ClosedBannersStorage()
+  closedBannersStorage: undefined
 };
 
 export default class BannerRotator {
   constructor(config = {}) {
-    this.config = merge(defaultConfig, config);
+    const cfg = merge(defaultConfig, config);
 
-    const banners = Array.isArray(config.banners)
-      ? config.banners
-      : __BANNER_ROTATOR_BANNERS_CONFIG__; // eslint-disable-line no-undef
+    this.closedBannersStorage = cfg.closedBannersStorage || new ClosedBannersStorage();
+    this.banners = cfg.banners || __BANNER_ROTATOR_BANNERS_CONFIG__; // eslint-disable-line no-undef
 
-    banners.forEach(banner => {
+    // normalize banners
+    this.banners.forEach(banner => {
       banner.startDate = banner.startDate ? parseDate(banner.startDate) : null;
       banner.endDate = banner.endDate ? parseDate(banner.endDate) : null;
     });
 
-    this.banners = banners;
-
     this.handleBannerClose = this.handleBannerClose.bind(this);
-    window.addEventListener(this.config.closeEventName, this.handleBannerClose);
+    window.addEventListener(cfg.closeEventName, this.handleBannerClose);
   }
 
   /**
+   * @param {BannerRotatorContext} [context]
    * @return {Promise<Array<Banner>>}
    */
-  run(context = {}) {
-    const ctx = merge({
-      date: new Date(),
-      location: window.location.pathname
-    }, context);
-
-    const banners = this.getMatchedBanners(ctx);
+  run(context) {
+    const banners = this.getMatchedBanners(context);
     const promises = banners.map(banner => banner.load()
-      .then(module => banner.module = module) // eslint-disable-line no-return-assign
+      .then(module => (banner.module = module))
       .then(() => banner)
     );
 
@@ -46,26 +48,22 @@ export default class BannerRotator {
   }
 
   /**
-   * @param {Object} [criteria]
-   * @param {Date} [criteria.date]
-   * @param {string} [criteria.location]
-   * @param {string} [criteria.countryCode]
+   * @param {BannerRotatorContext} [context]
    * @return {Array<Banner>}
    */
-  getMatchedBanners(criteria = {}) {
+  getMatchedBanners(context = {}) {
+    const {
+      date = new Date(),
+      location = window.location.pathname,
+      countryCode
+    } = context;
+
     return this.banners.filter(banner => {
       const { startDate, endDate, locations, countries } = banner;
-
       const wasClosed = this.isBannerWasClosed(banner.id);
-      const matchDate = isRangeContainsDate(startDate, endDate, criteria.date);
-
-      const matchLocation = locations && criteria.location
-        ? globMatcher(locations, criteria.location)
-        : true;
-
-      const matchCountry = countries && criteria.countryCode
-        ? countries.includes(criteria.countryCode)
-        : true;
+      const matchDate = isRangeContainsDate(startDate, endDate, date);
+      const matchLocation = locations && location ? globMatcher(locations, location) : true;
+      const matchCountry = countries && countryCode ? countries.includes(countryCode) : true;
 
       return matchDate && matchLocation && matchCountry && !wasClosed;
     });
@@ -76,7 +74,7 @@ export default class BannerRotator {
    * @return {boolean}
    */
   isBannerWasClosed(bannerId) {
-    return this.config.closedBannersStorage.has(bannerId);
+    return this.closedBannersStorage.has(bannerId);
   }
 
   /**
@@ -87,7 +85,7 @@ export default class BannerRotator {
   handleBannerClose(e) {
     const bannerId = e.detail;
     if (!this.isBannerWasClosed(bannerId)) {
-      this.config.closedBannersStorage.add(bannerId);
+      this.closedBannersStorage.add(bannerId);
     }
   }
 }

@@ -38,12 +38,11 @@ export default class BannerRotator {
    * @return {Promise<Array<Banner>>}
    */
   run(context) {
-    const banners = this.getMatchedBanners(context);
+    const banners = this.getBanners(context);
     const promises = banners.map(banner => banner.load()
       .then(module => (banner.module = module))
       .then(() => banner)
     );
-
     return Promise.all(promises);
   }
 
@@ -51,7 +50,7 @@ export default class BannerRotator {
    * @param {BannerRotatorContext} [context]
    * @return {Array<Banner>}
    */
-  getMatchedBanners(context = {}) {
+  getBanners(context = {}) {
     const {
       date = new Date(),
       location = window.location.pathname,
@@ -59,13 +58,14 @@ export default class BannerRotator {
     } = context;
 
     return this.banners.filter(banner => {
-      const { startDate, endDate, locations, countries } = banner;
-      const wasClosed = this.isBannerWasClosed(banner.id);
+      const { disabled, startDate, endDate, locations, countries } = banner;
+      const isClosed = this.isBannerWasClosed(banner.id);
+      const isDisabled = typeof disabled === 'boolean' ? disabled : false;
       const matchDate = isRangeContainsDate(startDate, endDate, date);
       const matchLocation = locations && location ? globMatcher(locations, location) : true;
       const matchCountry = countries && countryCode ? countries.includes(countryCode) : true;
 
-      return matchDate && matchLocation && matchCountry && !wasClosed;
+      return !isClosed && !isDisabled && matchDate && matchLocation && matchCountry;
     });
   }
 

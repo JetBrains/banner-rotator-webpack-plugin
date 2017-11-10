@@ -43,6 +43,9 @@
         },
         "data": {
           "type": ["string", "array", "object", "number"]
+        },
+        "disabled": {
+          "type": ["boolean"]
         }
       }
     }

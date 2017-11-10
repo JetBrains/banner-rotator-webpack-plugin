@@ -63,7 +63,7 @@ export default class BannerRotator {
       const isDisabled = typeof disabled === 'boolean' ? disabled : false;
       const matchDate = isRangeContainsDate(startDate, endDate, date);
       const matchLocation = locations && location ? globMatcher(locations, location) : true;
-      const matchCountry = countries && countryCode ? countries.includes(countryCode) : true;
+      const matchCountry = countries && countryCode ? countries.indexOf(countryCode) > -1 : true;
 
       return !isClosed && !isDisabled && matchDate && matchLocation && matchCountry;
     });

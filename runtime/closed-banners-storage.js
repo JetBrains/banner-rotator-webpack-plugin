@@ -31,7 +31,7 @@ export default class ClosedBannersStorage {
    */
   has(bannerId) {
     const val = this.get();
-    return Array.isArray(val) ? val.includes(bannerId) : false;
+    return Array.isArray(val) ? val.indexOf(bannerId) > -1 : false;
   }
 
   /**

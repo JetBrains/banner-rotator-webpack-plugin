@@ -24,7 +24,7 @@ export default class BannerRotator {
       banners,
       closeEventName,
       closedBannersStorage,
-      closedBannersStorage: storageKey
+      closedBannersStorageKey: storageKey
     } = this.config;
 
     this.closedBannersStorage = closedBannersStorage || new ClosedBannersStorage(storageKey);

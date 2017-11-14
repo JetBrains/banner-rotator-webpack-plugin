@@ -1,7 +1,7 @@
 import merge from 'merge-options';
 
 import ClosedBannersStorage from './closed-banners-storage';
-import { isRangeContainsDate, globMatcher, parseDate } from './utils';
+import { isRangeContainsDate, globMatcher, normalizeBanners } from './utils';
 
 /**
  * @typedef {Object} BannerRotatorContext
@@ -13,24 +13,25 @@ import { isRangeContainsDate, globMatcher, parseDate } from './utils';
 const defaultConfig = {
   banners: undefined,
   closeEventName: 'webpack-banner-rotator-banner-close',
-  closedBannersStorage: undefined
+  closedBannersStorage: undefined,
+  closedBannersStorageKey: 'webpack-banner-rotator-closed-banners'
 };
 
 export default class BannerRotator {
   constructor(config = {}) {
-    const cfg = merge(defaultConfig, config);
+    this.config = merge(defaultConfig, config);
+    const {
+      banners,
+      closeEventName,
+      closedBannersStorage,
+      closedBannersStorage: storageKey
+    } = this.config;
 
-    this.closedBannersStorage = cfg.closedBannersStorage || new ClosedBannersStorage();
-    this.banners = cfg.banners || __BANNER_ROTATOR_BANNERS_CONFIG__; // eslint-disable-line no-undef
-
-    // normalize banners
-    this.banners.forEach(banner => {
-      banner.startDate = banner.startDate ? parseDate(banner.startDate) : null;
-      banner.endDate = banner.endDate ? parseDate(banner.endDate) : null;
-    });
+    this.closedBannersStorage = closedBannersStorage || new ClosedBannersStorage(storageKey);
+    this.banners = normalizeBanners(banners || __BANNER_ROTATOR_BANNERS_CONFIG__); // eslint-disable-line no-undef
 
     this.handleBannerClose = this.handleBannerClose.bind(this);
-    window.addEventListener(cfg.closeEventName, this.handleBannerClose);
+    window.addEventListener(closeEventName, this.handleBannerClose);
   }
 
   /**
@@ -85,7 +86,15 @@ export default class BannerRotator {
   handleBannerClose(e) {
     const bannerId = e.detail;
     if (!this.isBannerWasClosed(bannerId)) {
-      this.closedBannersStorage.add(bannerId);
+      this.closedBannersStorage.push(bannerId);
     }
+  }
+
+  /**
+   * Detach close banner event and destroy closed banners storage
+   */
+  destroy() {
+    window.removeEventListener(this.config.closeEventName, this.handleBannerClose);
+    this.closedBannersStorage.destroy();
   }
 }

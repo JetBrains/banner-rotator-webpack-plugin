@@ -2,11 +2,11 @@
  * window.localStorage based storage to keep info about closed banners.
  */
 export default class ClosedBannersStorage {
-  constructor() {
-    this.storageKey = 'webpack-banner-rotator-closed-banners';
+  constructor(key) {
+    this.storageKey = key;
 
-    if (this.get() === null) {
-      this.set([]);
+    if (this.getAll() === null) {
+      this._write([]);
     }
   }
 
@@ -27,26 +27,17 @@ export default class ClosedBannersStorage {
   }
 
   /**
-   * @api
+   * @private
+   * @param {Array<string>} data
    */
-  has(bannerId) {
-    const val = this.get();
-    return Array.isArray(val) ? val.indexOf(bannerId) > -1 : false;
-  }
-
-  /**
-   * @api
-   */
-  add(bannerId) {
-    const ids = this.get();
-    ids.push(bannerId);
-    this.set(ids);
+  _write(data) {
+    window.localStorage.setItem(this.storageKey, ClosedBannersStorage.stringify(data));
   }
 
   /**
    * @return {Array<string>}
    */
-  get() {
+  getAll() {
     const rawValue = window.localStorage.getItem(this.storageKey);
     const isNull = rawValue === null;
     const isEmpty = rawValue === '';
@@ -64,9 +55,26 @@ export default class ClosedBannersStorage {
   }
 
   /**
-   * @param {Array<string>} value
+   * @api
    */
-  set(value) {
-    window.localStorage.setItem(this.storageKey, ClosedBannersStorage.stringify(value));
+  has(bannerId) {
+    const val = this.getAll();
+    return Array.isArray(val) ? val.indexOf(bannerId) > -1 : false;
+  }
+
+  /**
+   * @api
+   */
+  push(bannerId) {
+    const ids = this.getAll();
+    ids.push(bannerId);
+    this._write(ids);
+  }
+
+  /**
+   * @api
+   */
+  destroy() {
+    window.localStorage.removeItem(this.storageKey);
   }
 }

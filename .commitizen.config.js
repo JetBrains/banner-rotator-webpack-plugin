@@ -4,6 +4,7 @@
 module.exports = {
   types: [
     {value: 'feat',     name: 'feat:     A new feature'},
+    {value: 'improve',  name: 'improve:  Kind of small feature, but will not trigger a release'},
     {value: 'fix',      name: 'fix:      A bug fix'},
     {value: 'docs',     name: 'docs:     Documentation changes'},
     {value: 'style',    name: 'style:    Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)'},

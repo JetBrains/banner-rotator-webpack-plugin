@@ -59,8 +59,8 @@ export default class BannerRotator {
     } = context;
 
     return this.banners.filter(banner => {
-      const { disabled, startDate, endDate, locations, countries } = banner;
-      const isClosed = this.isBannerWasClosed(banner.id);
+      const { id, disabled, startDate, endDate, locations, countries } = banner;
+      const isClosed = id ? this.isBannerWasClosed(id) : false;
       const isDisabled = typeof disabled === 'boolean' ? disabled : false;
       const matchDate = isRangeContainsDate(startDate, endDate, date);
       const matchLocation = locations && location ? globMatcher(locations, location) : true;

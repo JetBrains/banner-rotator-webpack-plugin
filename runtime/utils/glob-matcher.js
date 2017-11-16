@@ -1,28 +1,25 @@
-import escapeRegexp from 'escape-string-regexp';
+import globToRegexp from 'glob-to-regexp';
+
+function isNegative(pattern) {
+  return pattern.charAt(0) === '!';
+}
 
 /**
- * TODO integrate https://github.com/fitzgen/glob-to-regexp
- *
- * Simple glob-to-matcher-function helper. Supports:
+ * Supports:
  * - glob star, eg `/path/*`
  * - negation of whole expression, eg `!/path/`
+ * - any single-character match, eg `.jsx?`
+ * - character ranges [a-z]
+ * - brace expansion {*.html, *.js}
  * - combination of all these things in any proportion
- *
- * @param {string} pattern Expression with optional glob pattern.
+ * @see https://github.com/fitzgen/glob-to-regexp#usage
+ * @param {string} glob Expression with optional glob pattern.
  * @return {Function<boolean>} Matcher function
  */
-export function createMatcher(pattern) {
-  const isNegative = pattern.charAt(0) === '!';
-
-  let p = isNegative ? pattern.substr(1) : pattern;
-  p = escapeRegexp(p);
-
-  // Hack to replace `* -> .*` and `^\! -> !`
-  p = p
-    .replace(/\\\*/g, '.*')
-    .replace(/^\!/, '!');
-
-  const regexp = new RegExp(p, 'gi');
+export function createMatcher(glob) {
+  const negative = isNegative(glob);
+  const pattern = negative ? glob.substr(1) : glob;
+  const regexp = globToRegexp(pattern, { extended: true });
 
   /**
    * @param {string} value
@@ -30,7 +27,7 @@ export function createMatcher(pattern) {
    */
   return function matcher(input) {
     const matched = regexp.test(input);
-    return isNegative ? !matched : matched;
+    return negative ? !matched : matched;
   };
 }
 
@@ -38,26 +35,21 @@ export function createMatcher(pattern) {
  * @param {Array<string>} patterns
  * @return {Function<boolean>}
  */
-export function createMultipleMatcher(patterns) {
-  const normalMatchers = patterns
-    .filter(pattern => pattern.charAt(0) !== '!')
-    .map(pattern => createMatcher(pattern));
-
-  const negationMatchers = patterns
-    .filter(pattern => pattern.charAt(0) === '!')
-    .map(pattern => createMatcher(pattern));
+export function createMultiMatcher(patterns) {
+  const normal = patterns.filter(p => !isNegative(p)).map(p => createMatcher(p));
+  const negation = patterns.filter(p => isNegative(p)).map(p => createMatcher(p));
 
   /**
    * @param {string} input
    * @return {boolean}
    */
-  return function matcher(input) {
-    const satisfyNormal = normalMatchers.length > 0
-      ? normalMatchers.some(normalMatcher => normalMatcher(input))
+  return function multiMatcher(input) {
+    const satisfyNormal = normal.length > 0
+      ? normal.some(normalMatcher => normalMatcher(input))
       : true;
 
-    const satisfyNegation = negationMatchers.length > 0
-      ? negationMatchers.every(negationMatcher => negationMatcher(input))
+    const satisfyNegation = negation.length > 0
+      ? negation.every(negationMatcher => negationMatcher(input))
       : true;
 
     return satisfyNormal && satisfyNegation;
@@ -71,6 +63,6 @@ export function createMultipleMatcher(patterns) {
  */
 export default function (pattern, input) {
   const multiple = Array.isArray(pattern);
-  const matcher = multiple ? createMultipleMatcher(pattern) : createMatcher(pattern);
+  const matcher = multiple ? createMultiMatcher(pattern) : createMatcher(pattern);
   return matcher(input);
 }

@@ -2,7 +2,7 @@
 import {
   isRangeContainsDate,
   createMatcher,
-  createMultipleMatcher
+  createMultiMatcher
 } from 'webpack-banner-rotator-plugin/runtime/utils';
 
 describe('runtime/utils', () => {
@@ -15,57 +15,54 @@ describe('runtime/utils', () => {
   });
 
   describe('createMatcher', () => {
-    const CASES = [
-      {
-        pattern: '/index.html',
-        expected: {
-          '/': false,
-          '/index': false,
-          '/index.html': true
-        }
+    const cases = {
+      '/foo/*': {
+        '/': false,
+        '/index': false,
+        '/index.html/': false,
+        '/fooz/foo/bar': false,
+        '/foo/': true,
+        '/foo/bar': true
       },
-      {
-        pattern: '/foo/*',
-        expected: {
-          '/': false,
-          '/index': false,
-          '/index.html/': false,
-          '/foo/bar': true,
-          '/fooz/foo/bar': false
-        }
+      '/index.html': {
+        '/': false,
+        '/index': false,
+        '/index.html/': false,
+        '/index.html/123': false,
+        '/index.html': true
       },
-      {
-        pattern: '!/foo/*',
-        expected: {
-          '/': true,
-          '/index': true,
-          '/index.html/': true,
-          '/foo/bar': false,
-          '/fooz/foo/bar': true
-        }
+      '!/foo/*': {
+        '/': true,
+        '/index': true,
+        '/index.html/': true,
+        '/fooz/foo/bar': true,
+        '/foo/': false,
+        '/foo/bar': false
       }
-    ];
+    };
 
-    CASES.forEach(CASE => {
-      it(CASE.pattern, () => {
-        const { pattern, expected } = CASE;
+    Object.keys(cases).forEach(pattern => {
+      describe(pattern, () => {
+        const expectedDict = cases[pattern];
         const matcher = createMatcher(pattern);
 
-        Object.keys(expected).forEach(input => {
-          const expectedValue = CASE.expected[input];
+        Object.keys(expectedDict).forEach(input => {
+          const expected = expectedDict[input];
           const actual = matcher(input);
 
-          actual.should.be.equal(
-            expectedValue,
-            `\n\nPattern: ${pattern}\nInput: ${input}\nExpected: ${expectedValue}\nActual: ${actual}\n\n`
-          );
+          it(`${input}: ${expected}`, () => {
+            actual.should.be.equal(
+              expected,
+              `\n\nPattern: ${pattern}\nInput: ${input}\nExpected: ${expected}\nActual: ${actual}\n\n`
+            );
+          });
         });
       });
     });
   });
 
-  describe('createMultipleMatcher', () => {
-    const CASES = [
+  describe('createMultiMatcher', () => {
+    const cases = [
       {
         patterns: ['!/index.html'],
         expected: {
@@ -73,9 +70,9 @@ describe('runtime/utils', () => {
         }
       },
       {
-        patterns: ['*', '!/index.html'],
+        patterns: ['/index.html'],
         expected: {
-          '/index.html': false
+          '/index.html': true
         }
       },
       {
@@ -87,18 +84,20 @@ describe('runtime/utils', () => {
       }
     ];
 
-    CASES.forEach(({ patterns, expected }) => {
+    cases.forEach(({ patterns, expected }) => {
       const patternDisplayName = patterns.join(', ');
 
-      it(patternDisplayName, () => {
+      describe(patternDisplayName, () => {
         Object.keys(expected).forEach(input => {
           const expectedValue = expected[input];
-          const actual = createMultipleMatcher(patterns)(input);
+          const actual = createMultiMatcher(patterns)(input);
 
-          actual.should.be.equal(
-            expectedValue,
-            `\n\nPattern: ${patternDisplayName}\nInput: ${input}\nExpected: ${expectedValue}\nActual: ${actual}\n\n`
-          );
+          it(`${input}: ${expectedValue}`, () => {
+            actual.should.be.equal(
+              expectedValue,
+              `\n\nPattern: ${patternDisplayName}\nInput: ${input}\nExpected: ${expectedValue}\nActual: ${actual}\n\n`
+            );
+          });
         });
       });
     });

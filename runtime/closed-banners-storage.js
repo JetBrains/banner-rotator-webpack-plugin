@@ -31,14 +31,25 @@ export default class ClosedBannersStorage {
    * @param {Array<string>} data
    */
   _write(data) {
-    window.localStorage.setItem(this.storageKey, ClosedBannersStorage.stringify(data));
+    try {
+      window.localStorage.setItem(this.storageKey, ClosedBannersStorage.stringify(data));
+    } catch (e) {
+      // nothing here
+    }
   }
 
   /**
    * @return {Array<string>}
    */
   getAll() {
-    const rawValue = window.localStorage.getItem(this.storageKey);
+    let rawValue;
+
+    try {
+      window.localStorage.getItem(this.storageKey);
+    } catch (e) {
+      rawValue = null;
+    }
+
     const isNull = rawValue === null;
     const isEmpty = rawValue === '';
     let value;
@@ -75,6 +86,10 @@ export default class ClosedBannersStorage {
    * @api
    */
   destroy() {
-    window.localStorage.removeItem(this.storageKey);
+    try {
+      window.localStorage.removeItem(this.storageKey);
+    } catch (e) {
+      // nothing here
+    }
   }
 }

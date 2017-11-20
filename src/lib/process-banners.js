@@ -26,7 +26,7 @@ function processBanners(banners) {
  */
 function generateId(banner) {
   const fields = ['entry', 'id', 'start', 'end', 'locations', 'countries'];
-  const data = fields.reduce((field, acc) => {
+  const data = fields.reduce((acc, field) => {
     if (typeof banner[field] !== 'undefined') {
       acc[field] = banner[field];
     }
@@ -34,7 +34,8 @@ function generateId(banner) {
   }, {});
 
   const stringified = JSON.stringify(data);
-  return crypto.createHash('md5').update(stringified).digest('hex');
+  const id = crypto.createHash('md5').update(stringified).digest('hex');
+  return id;
 }
 
 module.exports = processBanners;

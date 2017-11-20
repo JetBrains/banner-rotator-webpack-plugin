@@ -19,11 +19,9 @@
     "runtime"
   ],
   "dependencies": {
-    "clone": "^2.1.1",
     "glob-to-regexp": "^0.3.0",
     "merge-options": "^1.0.0",
-    "slash": "^1.0.0",
-    "url-slug": "^2.0.0"
+    "slash": "^1.0.0"
   },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",

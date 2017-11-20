@@ -1,8 +1,8 @@
 import { parseDate } from './index';
 
 /**
- * @param {Array<BannerConfig>} banners
- * @return {Array<BannerConfig>}
+ * @param {Array<Banner>} banners
+ * @return {Array<Banner>}
  */
 export default function normalizeBanners(banners) {
   banners.forEach(banner => {

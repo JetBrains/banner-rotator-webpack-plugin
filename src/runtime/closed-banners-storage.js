@@ -44,12 +44,12 @@ export default class ClosedBannersStorage {
    * @return {Array<string>}
    */
   getAll() {
-    let rawValue;
+    const rawValue = null;
 
     try {
       window.localStorage.getItem(this.storageKey);
     } catch (e) {
-      rawValue = null;
+      // nothing here
     }
 
     const isNull = rawValue === null;

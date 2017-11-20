@@ -1,7 +1,8 @@
 import merge from 'merge-options';
 
-import ClosedBannersStorage from './closed-banners-storage';
+import ClosedStorage from './closed-banners-storage';
 import { isRangeContainsDate, globMatcher, normalizeBanners } from './utils';
+import defaultConfig from './config';
 
 /**
  * @typedef {Object} BannerRotatorContext
@@ -10,26 +11,12 @@ import { isRangeContainsDate, globMatcher, normalizeBanners } from './utils';
  * @property {string} countryCode
  */
 
-const defaultConfig = {
-  banners: undefined,
-  closeEventName: 'webpack-banner-rotator-banner-close',
-  closedBannersStorage: undefined,
-  closedBannersStorageKey: 'webpack-banner-rotator-closed-banners'
-};
-
 export default class BannerRotator {
   constructor(config = {}) {
     this.config = merge(defaultConfig, config);
-    const {
-      banners,
-      closeEventName,
-      closedBannersStorage,
-      closedBannersStorageKey: storageKey
-    } = this.config;
-
-    this.closedBannersStorage = closedBannersStorage || new ClosedBannersStorage(storageKey);
+    const { banners, closeEventName, closedBannersStorage, closedBannersStorageKey } = this.config;
+    this.closedBannersStorage = closedBannersStorage || new ClosedStorage(closedBannersStorageKey);
     this.banners = normalizeBanners(banners || __BANNER_ROTATOR_BANNERS_CONFIG__); // eslint-disable-line no-undef
-
     this.handleBannerClose = this.handleBannerClose.bind(this);
     window.addEventListener(closeEventName, this.handleBannerClose);
   }
@@ -60,7 +47,7 @@ export default class BannerRotator {
 
     return this.banners.filter(banner => {
       const { id, disabled, start, end, locations, countries } = banner;
-      const isClosed = id ? this.isBannerWasClosed(id) : false;
+      const isClosed = id ? this.isBannerClosed(id) : false;
       const isDisabled = typeof disabled === 'boolean' ? disabled : false;
       const matchDate = isRangeContainsDate(start, end, date);
       const matchLocation = locations && location ? globMatcher(locations, location) : true;
@@ -74,7 +61,7 @@ export default class BannerRotator {
    * @param {string} bannerId
    * @return {boolean}
    */
-  isBannerWasClosed(bannerId) {
+  isBannerClosed(bannerId) {
     return this.closedBannersStorage.has(bannerId);
   }
 
@@ -85,7 +72,7 @@ export default class BannerRotator {
    */
   handleBannerClose(e) {
     const bannerId = e.detail;
-    if (!this.isBannerWasClosed(bannerId)) {
+    if (!this.isBannerClosed(bannerId)) {
       this.closedBannersStorage.push(bannerId);
     }
   }

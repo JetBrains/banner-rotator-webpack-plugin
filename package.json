@@ -13,10 +13,10 @@
   "homepage": "https://github.com/kisenka/banner-rotator-webpack-plugin#readme",
   "bugs": "https://github.com/kisenka/banner-rotator-webpack-plugin/issues",
   "repository": "kisenka/banner-rotator-webpack-plugin",
-  "main": "lib/plugin.js",
+  "main": "src/lib/plugin.js",
   "files": [
-    "lib",
-    "runtime"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "glob-to-regexp": "^0.3.0",

@@ -13,12 +13,14 @@ import defaultConfig from './config';
 
 export default class BannerRotator {
   constructor(config = {}) {
-    this.config = merge(defaultConfig, config);
-    const { banners, closeEventName, closedBannersStorage, closedBannersStorageKey } = this.config;
-    this.closedBannersStorage = closedBannersStorage || new ClosedStorage(closedBannersStorageKey);
-    this.banners = normalizeBanners(banners || __BANNER_ROTATOR_BANNERS_CONFIG__); // eslint-disable-line no-undef
+    const cfg = merge(defaultConfig, config);
+
+    this.config = cfg;
+    this.closedBannersStorage = cfg.closedBannersStorage || new ClosedStorage();
+    this.banners = normalizeBanners(cfg.banners || __BANNER_ROTATOR_BANNERS_CONFIG__); // eslint-disable-line no-undef
     this.handleBannerClose = this.handleBannerClose.bind(this);
-    window.addEventListener(closeEventName, this.handleBannerClose);
+
+    window.addEventListener(cfg.closeEventName, this.handleBannerClose);
   }
 
   /**

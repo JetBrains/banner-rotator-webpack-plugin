@@ -12,7 +12,7 @@
   },
   "overrides": [
     {
-      "files": "runtime/{*,**/*}.js",
+      "files": "src/runtime/{*,**/*}.js",
       "env": {
         "browser": true
       }
@@ -24,6 +24,10 @@
       },
       "parserOptions": {
         "ecmaVersion": 2017
+      },
+      "rules": {
+        "no-unused-expressions": "off",
+        "no-magic-numbers": "off"
       }
     }
   ]

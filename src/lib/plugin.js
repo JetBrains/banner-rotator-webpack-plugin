@@ -66,6 +66,10 @@ class BannerRotatorPlugin {
       });
 
       compilation.plugin('optimize-chunk-ids', () => {
+        if (typeof config.chunkId === 'undefined') {
+          return;
+        }
+
         BannerRotatorPlugin.getChunks(compilation.chunks).forEach(chunk => {
           // Rename banner chunk id
           const id = compilation.getPath(config.chunkId, { chunk });

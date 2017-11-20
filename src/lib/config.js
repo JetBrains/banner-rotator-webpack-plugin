@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const pkg = require('../package.json');
+const pkg = require('../../package.json');
 
 /**
  * @typedef {Object} BannerRotatorPluginConfig
@@ -53,7 +53,7 @@ module.exports = {
    * @type {BannerRotatorPluginConfig}
    */
   plugin: {
-    banners: 'banners/[id]',
+    banners: undefined,
     chunkId: undefined,
     process: undefined
   }

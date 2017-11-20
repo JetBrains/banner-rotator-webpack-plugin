@@ -4,10 +4,10 @@ const {
   LOADER_PATH,
   RUNTIME_MODULE_PATH,
   BANNERS_PLACEHOLDER
-} = require('../../lib/config');
+} = require('../../src/lib/config');
 
 const webpackConfig = require('../../webpack.config');
-const Plugin = require('../../lib/plugin');
+const Plugin = require('../../src/lib/plugin');
 const utils = require('../utils');
 
 const { createCompiler } = utils;

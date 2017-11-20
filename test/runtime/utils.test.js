@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-expressions */
 import {
   isRangeContainsDate,
   createMatcher,
   createMultiMatcher
-} from 'webpack-banner-rotator-plugin/runtime/utils';
+} from 'webpack-banner-rotator-plugin/src/runtime/utils';
 
 describe('runtime/utils', () => {
   describe('isRangeContainsDate', () => {

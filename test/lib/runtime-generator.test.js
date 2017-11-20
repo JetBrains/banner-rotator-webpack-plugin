@@ -1,5 +1,4 @@
-/* eslint-disable no-magic-numbers */
-const Generator = require('../../lib/runtime-generator');
+const Generator = require('../../src/lib/runtime-generator');
 
 describe('runtime-generator', () => {
   describe('#prop()', () => {

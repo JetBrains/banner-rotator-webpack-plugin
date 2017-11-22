@@ -75,7 +75,7 @@ export default class BannerRotator {
    */
   closeBanner(id) {
     if (!this.isBannerClosed(id)) {
-      this.closedBannersStorage.push(id);
+      this.closedBannersStorage.add(id);
     }
   }
 

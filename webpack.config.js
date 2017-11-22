@@ -1,7 +1,5 @@
 const path = require('path');
 
-const ModuleConcatenationPlugin = require('webpack/lib/optimize/ModuleConcatenationPlugin');
-
 const packageName = require('./package.json').name;
 
 module.exports = {
@@ -16,21 +14,5 @@ module.exports = {
     alias: {
       [packageName]: __dirname
     }
-  },
-
-  devtool: 'source-map',
-
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'buble-loader'
-      }
-    ]
-  },
-
-  plugins: [
-    new ModuleConcatenationPlugin()
-  ]
+  }
 };

@@ -14,6 +14,7 @@
   "bugs": "https://github.com/kisenka/banner-rotator-webpack-plugin/issues",
   "repository": "kisenka/banner-rotator-webpack-plugin",
   "main": "src/lib/plugin.js",
+  "browser": "dist/rotator.js",
   "files": [
     "dist",
     "src"
@@ -25,8 +26,7 @@
   },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",
-    "buble": "^0.16.0",
-    "buble-loader": "^0.4.1",
+    "bluebird": "^3.5.1",
     "chai": "4.1.2",
     "clean-webpack-plugin": "^0.1.17",
     "commitizen": "2.9.6",
@@ -43,6 +43,10 @@
     "karma-webpack": "^2.0.5",
     "mocha": "4.0.1",
     "nyc": "11.2.1",
+    "rollup": "^0.51.8",
+    "rollup-plugin-buble": "^0.18.0",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "webpack": "^3.8.1",
     "webpack-merge": "^4.1.0",
     "webpack-toolkit": "^1.0.0"
@@ -51,12 +55,14 @@
     "webpack": ">= 2"
   },
   "scripts": {
-    "build": "rm -rf build && webpack",
+    "build": "rm -rf dist && node scripts/build-runtime",
     "commit": "git-cz",
     "commitmsg": "cz-customizable-ghooks",
     "lint": "eslint .",
     "precommit": "yarn run lint",
-    "test": "nyc --check-coverage mocha lib/**/__tests__/*.test.js"
+    "test": "yarn test:plugin && yarn test:runtime",
+    "test:plugin": "nyc mocha test/lib/*.test.js",
+    "test:runtime": "karma start"
   },
   "config": {
     "commitizen": {

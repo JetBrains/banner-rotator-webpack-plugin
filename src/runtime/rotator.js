@@ -19,7 +19,7 @@ export default class BannerRotator {
     this.closedBannersStorage = cfg.closedBannersStorage || new ClosedStorage();
     this.banners = normalizeBanners(cfg.banners || __BANNER_ROTATOR_BANNERS_CONFIG__); // eslint-disable-line no-undef
 
-    this._handleBannerClose = function (e) {
+    this._handleBannerClose = e => {
       this.closeBanner(e.detail);
     };
 

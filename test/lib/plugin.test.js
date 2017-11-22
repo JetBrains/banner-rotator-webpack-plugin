@@ -20,7 +20,8 @@ describe('plugin', () => {
   describe('prepare()', () => {
     it('should properly add custom loader rules', () => {
       const compiler = createCompiler({ entry: './test-banner' })._compiler;
-      Plugin.addLoaderForRuntime(compiler);
+      const plugin = new Plugin();
+      plugin.addLoaderForRuntime(compiler);
       const [rule] = compiler.options.module.rules;
       rule.loader.should.be.equal(LOADER_PATH);
       rule.test.should.be.equal(defaultConfig.runtimeModule);

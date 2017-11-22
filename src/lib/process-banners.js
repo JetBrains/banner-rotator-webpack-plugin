@@ -26,12 +26,12 @@ function processBanners(banners) {
  */
 function generateId(banner) {
   const fields = ['entry', 'id', 'start', 'end', 'locations', 'countries'];
-  const data = fields.reduce((acc, field) => {
-    if (typeof banner[field] !== 'undefined') {
+  const data = fields
+    .filter(field => banner[field])
+    .reduce((acc, field) => {
       acc[field] = banner[field];
-    }
-    return acc;
-  }, {});
+      return acc;
+    }, {});
 
   const stringified = JSON.stringify(data);
   const id = crypto.createHash('md5').update(stringified).digest('hex');

@@ -3,7 +3,6 @@ const merge = require('merge-options');
 const {
   NAMESPACE,
   LOADER_PATH,
-  RUNTIME_MODULE_PATH,
   plugin: defaultConfig
 } = require('./config');
 
@@ -24,8 +23,9 @@ class BannerRotatorPlugin {
    * @param {Compiler} compiler
    * @return {Compiler}
    */
-  static addLoaderForRuntime(compiler) {
+  addLoaderForRuntime(compiler) {
     const compilerOptions = compiler.options;
+    const runtimeModule = this.config.runtimeModule;
 
     if (!compilerOptions.module) {
       compilerOptions.module = {};
@@ -36,7 +36,7 @@ class BannerRotatorPlugin {
     }
 
     compilerOptions.module.rules.push({
-      test: RUNTIME_MODULE_PATH,
+      test: runtimeModule,
       loader: LOADER_PATH
     });
 
@@ -48,17 +48,18 @@ class BannerRotatorPlugin {
    * @param {Array<Chunk>} chunks
    * @return {Array<Chunk>}
    */
-  static getChunks(chunks) {
+  getChunks(chunks) {
+    const runtimeModule = this.config.runtimeModule;
     return chunks.filter(chunk => {
       const resources = chunk.origins.map(origin => origin.module.resource);
-      return resources.some(resource => resource === RUNTIME_MODULE_PATH);
+      return resources.some(resource => resource === runtimeModule);
     });
   }
 
   apply(compiler) {
     const config = this.config;
 
-    BannerRotatorPlugin.addLoaderForRuntime(compiler);
+    this.addLoaderForRuntime(compiler);
 
     compiler.plugin('this-compilation', compilation => {
       compilation.plugin('normal-module-loader', loaderContext => {
@@ -70,7 +71,7 @@ class BannerRotatorPlugin {
           return;
         }
 
-        BannerRotatorPlugin.getChunks(compilation.chunks).forEach(chunk => {
+        this.getChunks(compilation.chunks).forEach(chunk => {
           // Rename banner chunk id
           const id = compilation.getPath(config.chunkId, { chunk });
           chunk.id = id;

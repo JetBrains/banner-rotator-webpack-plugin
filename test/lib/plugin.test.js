@@ -2,8 +2,7 @@ const webpackMerge = require('webpack-merge');
 
 const {
   LOADER_PATH,
-  RUNTIME_MODULE_PATH,
-  BANNERS_PLACEHOLDER
+  plugin: defaultConfig
 } = require('../../src/lib/config');
 
 const webpackConfig = require('../../webpack.config');
@@ -24,7 +23,7 @@ describe('plugin', () => {
       Plugin.addLoaderForRuntime(compiler);
       const [rule] = compiler.options.module.rules;
       rule.loader.should.be.equal(LOADER_PATH);
-      rule.test.should.be.equal(RUNTIME_MODULE_PATH);
+      rule.test.should.be.equal(defaultConfig.runtimeModule);
     });
   });
 
@@ -43,7 +42,7 @@ describe('plugin', () => {
 
       assets['main.js'].source().should
         .contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`)
-        .and.not.contain(BANNERS_PLACEHOLDER);
+        .and.not.contain(defaultConfig.bannersRuntimePlaceholder);
 
       assets.should.contain.property(expectedChunkFilename);
       assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);

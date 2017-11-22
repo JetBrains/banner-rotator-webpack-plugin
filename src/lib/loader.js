@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const { NAMESPACE, BANNERS_PLACEHOLDER } = require('./config');
+const { NAMESPACE } = require('./config');
 const RuntimeGenerator = require('./runtime-generator');
 const processBanners = require('./process-banners');
 
@@ -34,7 +34,7 @@ module.exports = function loader(content, sourcemap) {
   }
 
   const runtime = RuntimeGenerator.banners(banners, compilerContext);
-  const result = content.replace(BANNERS_PLACEHOLDER, runtime);
+  const result = content.replace(config.bannersRuntimePlaceholder, runtime);
 
   return callback(null, result, sourcemap);
 };

@@ -35,7 +35,7 @@ export default class ClosedBannersStorage {
       // nothing here
     }
 
-    return rawValue !== null ? JSON.parse(rawValue) : null;
+    return !!rawValue ? JSON.parse(rawValue) : null; // eslint-disable-line no-extra-boolean-cast
   }
 
   /**

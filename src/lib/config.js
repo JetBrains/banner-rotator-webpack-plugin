@@ -10,7 +10,7 @@ const fs = require('fs');
  * @example `banners/[id]` will produce chunk files like `banners/0.js`
  * @see https://webpack.js.org/configuration/output/#output-chunkfilename
  *
- * @property {Function<Array<Banner>>} [process] Process banners by custom used defined function
+ * @property {Promise<Array<Banner>>} [process] Process banners by custom used defined function
  * @property {string} runtimeModule Path to runtime module. Plugin use it to find modules processed by plugin.
  * @property {string} bannersRuntimePlaceholder Placeholder which will be replaced with banners config data with runtime to lazy load banner module.
  */

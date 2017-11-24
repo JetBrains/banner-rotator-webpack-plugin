@@ -20,6 +20,7 @@
     "src"
   ],
   "dependencies": {
+    "fs-extra": "^4.0.2",
     "glob-to-regexp": "^0.3.0",
     "merge-options": "^1.0.0",
     "slash": "^1.0.0",

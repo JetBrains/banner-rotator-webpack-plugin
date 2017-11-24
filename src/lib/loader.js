@@ -30,7 +30,7 @@ module.exports = function loader(content, sourcemap) {
   banners = processBanners(banners);
 
   if (typeof config.process === 'function') {
-    banners = config.process(banners);
+    banners = config.process.call(this, banners);
   }
 
   const runtime = RuntimeGenerator.banners(banners, compilerContext);

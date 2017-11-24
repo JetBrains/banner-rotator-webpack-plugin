@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 
+const slugify = require('url-slug');
+
 /**
  * @param {Array<Banner>} banners
  * @return {Array<Banner>}
@@ -13,7 +15,7 @@ function processBanners(banners) {
 
   filtered.forEach(banner => {
     if (typeof banner.id === 'undefined') {
-      banner.id = generateId(banner);
+      banner.id = slugify(banner.entry);
     }
   });
 
@@ -22,20 +24,18 @@ function processBanners(banners) {
 
 /**
  * @param {Banner} banner
+ * @param {Array<string>} fields
  * @return {string}
  */
-function generateId(banner) {
-  const fields = ['entry', 'id', 'start', 'end', 'locations', 'countries'];
+function generateId(banner, fields = ['entry', 'id', 'start', 'end', 'locations', 'countries']) {
   const data = fields
-    .filter(field => banner[field])
-    .reduce((acc, field) => {
-      acc[field] = banner[field];
-      return acc;
-    }, {});
+    .filter(field => typeof banner[field] !== 'undefined')
+    .map(field => JSON.stringify(banner[field]))
+    .join('_');
 
-  const stringified = JSON.stringify(data);
-  const id = crypto.createHash('md5').update(stringified).digest('hex');
+  const id = crypto.createHash('md5').update(data).digest('hex');
   return id;
 }
 
 module.exports = processBanners;
+module.exports.generateId = generateId;

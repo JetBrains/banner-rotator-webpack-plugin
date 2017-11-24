@@ -67,7 +67,7 @@ class BannerRotatorPlugin {
       });
 
       compilation.plugin('optimize-chunk-ids', () => {
-        if (typeof config.chunkId === 'undefined') {
+        if (!config.chunkId) {
           return;
         }
 

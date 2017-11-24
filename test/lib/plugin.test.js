@@ -30,9 +30,10 @@ describe('plugin', () => {
 
   describe('apply()', () => {
     const banners = [{ entry: './banners/test-banner' }];
+    const defaultExpectedChunkId = 'banners/0';
 
     it('should replace banners placeholder and create lazy chunk', async () => {
-      const expectedChunkId = '0';
+      const expectedChunkId = defaultExpectedChunkId;
       const expectedChunkFilename = `${expectedChunkId}.js`;
 
       const { assets } = await compile({
@@ -42,29 +43,43 @@ describe('plugin', () => {
       });
 
       assets['main.js'].source().should
-        .contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`)
+        .contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`)
         .and.not.contain(defaultConfig.bannersRuntimePlaceholder);
 
       assets.should.contain.property(expectedChunkFilename);
-      assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);
+      assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);
     });
 
     it('should allow to override banner chunk id', async () => {
-      const expectedChunkId = 'banners/0';
+      const customChunkId = 'qwe/[id]';
+      const expectedChunkId = 'qwe/0';
       const expectedChunkFilename = `${expectedChunkId}.js`;
 
       const { assets } = await compile({
         plugins: [
-          new Plugin({
-            banners,
-            chunkId: 'banners/[id]'
-          })
+          new Plugin({ banners, chunkId: customChunkId })
         ]
       });
 
       assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`);
       assets.should.contain.property(expectedChunkFilename);
       assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);
+    });
+
+    it('should allow to pass falsy value as chunkId and dont\'t touch chunk id then', async () => {
+      const chunkId = null;
+      const expectedChunkId = '0';
+      const expectedChunkFilename = `${expectedChunkId}.js`;
+
+      const { assets } = await compile({
+        plugins: [
+          new Plugin({ banners, chunkId })
+        ]
+      });
+
+      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`);
+      assets.should.contain.property(expectedChunkFilename);
+      assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);
     });
   });
 });

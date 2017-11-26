@@ -1,6 +1,5 @@
 const path = require('path');
 
-const Promise = require('bluebird');
 const rollup = require('rollup');
 const resolvePlugin = require('rollup-plugin-node-resolve');
 const commonjsPlugin = require('rollup-plugin-commonjs');
@@ -8,23 +7,20 @@ const bublePlugin = require('rollup-plugin-buble');
 
 const root = path.resolve(__dirname, '..');
 const src = path.resolve(root, 'src/runtime');
-const dest = path.resolve(root, 'dist');
+const dest = path.resolve(root, 'runtime');
 
-/**
- * libraryName: path-to-entry
- */
 const entries = {
-  BannerRotator: `${src}/rotator.js`,
-  ClosedBannersStorage: `${src}/closed-banners-storage.js`,
-  dispatchCloseEvent: `${src}/dispatch-close-event.js`
+  rotator: `${src}/rotator.js`,
+  utils: `${src}/utils/index.js`,
+  'closed-banners-storage': `${src}/closed-banners-storage.js`,
+  'dispatch-close-event.js': `${src}/dispatch-close-event.js`
 };
 
-Promise.map(Object.keys(entries), name => {
-  const input = entries[name];
-  const file = path.resolve(dest, path.basename(input));
-
+Object.keys(entries).map(entry => {
+  const entryPath = entries[entry];
+  const outputPath = path.resolve(dest, `${entry}.js`);
   rollup.rollup({
-    input,
+    input: entryPath,
     plugins: [
       resolvePlugin(),
       commonjsPlugin(),
@@ -32,10 +28,9 @@ Promise.map(Object.keys(entries), name => {
     ]
   }).then(bundle => {
     bundle.write({
-      file,
-      name,
-      format: 'umd',
+      file: outputPath,
+      format: 'cjs',
       sourcemap: true
     });
-  });
+  }).catch(e => console.log(`Runtime build ERROR: ${e.message}`));
 });

@@ -20,7 +20,7 @@ module.exports = config => {
       'test/runtime/*.test.js': ['webpack', 'sourcemap']
     },
 
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
     // Webpack config
     webpack: webpackConfig,

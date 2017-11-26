@@ -35,7 +35,7 @@ module.exports = {
     banners: undefined,
     chunkId: 'banners/[id]',
     process: undefined,
-    runtimeModule: path.resolve(__dirname, '../runtime/rotator.js'),
+    runtimeModule: path.resolve(__dirname, '../../runtime/rotator.js'),
     bannersRuntimePlaceholder: '__BANNER_ROTATOR_BANNERS_CONFIG__'
   }
 };

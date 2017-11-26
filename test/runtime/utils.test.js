@@ -2,7 +2,7 @@ import {
   isRangeContainsDate,
   createMatcher,
   createMultiMatcher
-} from 'webpack-banner-rotator-plugin/src/runtime/utils';
+} from 'webpack-banner-rotator-plugin/runtime/utils';
 
 describe('runtime/utils', () => {
   describe('isRangeContainsDate', () => {

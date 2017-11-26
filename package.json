@@ -14,9 +14,11 @@
   "bugs": "https://github.com/kisenka/banner-rotator-webpack-plugin/issues",
   "repository": "kisenka/banner-rotator-webpack-plugin",
   "main": "src/lib/plugin.js",
-  "browser": "dist/rotator.js",
+  "module": "src/runtime/rotator.js",
+  "browser": "runtime/rotator.js",
   "files": [
-    "dist",
+    "lib",
+    "runtime",
     "src"
   ],
   "dependencies": {
@@ -26,9 +28,13 @@
     "slash": "^1.0.0",
     "url-slug": "^2.0.0"
   },
+  "peerDependencies": {
+    "webpack": ">= 2"
+  },
   "devDependencies": {
     "@kisenka/eslint-config": "0.0.2",
     "bluebird": "^3.5.1",
+    "buble-loader": "^0.4.1",
     "chai": "4.1.2",
     "clean-webpack-plugin": "^0.1.17",
     "commitizen": "2.9.6",
@@ -41,6 +47,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
+    "karma-phantomjs-launcher": "^1.0.4",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.5",
     "mocha": "4.0.1",
@@ -53,15 +60,16 @@
     "webpack-merge": "^4.1.0",
     "webpack-toolkit": "^1.0.0"
   },
-  "peerDependencies": {
-    "webpack": ">= 2"
-  },
   "scripts": {
-    "build": "rm -rf dist && node scripts/build-runtime",
+    "build": "yarn build:runtime",
+    "build:runtime": "rm -rf runtime && node scripts/build-runtime",
+
+    "precommit": "yarn run lint",
     "commit": "git-cz",
     "commitmsg": "cz-customizable-ghooks",
     "lint": "eslint .",
-    "precommit": "yarn run lint",
+
+    "pretest": "yarn build",
     "test": "yarn test:plugin && yarn test:runtime",
     "test:plugin": "nyc mocha test/lib/*.test.js",
     "test:runtime": "karma start"

@@ -1,3 +1,4 @@
+/* nyc ignore */
 const crypto = require('crypto');
 
 const slugify = require('url-slug');

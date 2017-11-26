@@ -6,26 +6,29 @@ const { NAMESPACE } = require('./config');
 const RuntimeGenerator = require('./runtime-generator');
 const processBanners = require('./process-banners');
 
-module.exports = function loader(content, sourcemap) {
-  if (typeof this.cacheable === 'function') {
+module.exports = function (content, sourcemap) {
+  /* istanbul ignore else */
+  if (this.cacheable) {
     this.cacheable();
   }
 
-  const callback = this.async();
-  const compilerContext = this._compiler.context;
+  const loader = this; // eslint-disable-line consistent-this
+  const callback = loader.async();
+  const compilerContext = loader._compiler.context;
 
-  /**
-   * @type {BannerRotatorPluginConfig}
-   */
+  /** @type {BannerRotatorPluginConfig} */
   const config = this[NAMESPACE].config;
-  const bannersOption = config.banners;
+  const {
+    banners: bannersOption,
+    process: customProcessor
+  } = config;
   const bannersOptionIsPath = typeof bannersOption === 'string';
-  const configFilePath = bannersOptionIsPath ? path.resolve(compilerContext, bannersOption) : null;
+  const bannersFilePath = bannersOptionIsPath ? path.resolve(compilerContext, bannersOption) : null;
 
   return Promise.resolve()
-    .then(() => (bannersOptionIsPath ? fs.readJson(configFilePath) : bannersOption))
+    .then(() => (bannersOptionIsPath ? fs.readJson(bannersFilePath) : bannersOption))
     .then(banners => processBanners(banners))
-    .then(banners => (config.process ? config.process.call(this, banners) : banners))
+    .then(banners => (customProcessor ? customProcessor.call(loader, banners) : banners))
     .then(banners => {
       const runtime = RuntimeGenerator.banners(banners, compilerContext);
       const result = content.replace(config.bannersRuntimePlaceholder, runtime);

@@ -27,10 +27,12 @@ class BannerRotatorPlugin {
     const compilerOptions = compiler.options;
     const runtimeModule = this.config.runtimeModule;
 
+    /* istanbul ignore if */
     if (!compilerOptions.module) {
       compilerOptions.module = {};
     }
 
+    /* istanbul ignore if */
     if (!compilerOptions.module.rules) {
       compilerOptions.module.rules = [];
     }

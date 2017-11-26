@@ -14,7 +14,9 @@
   "cache": true,
   "all": true,
   "include": [
-    "lib/**"
+    "src/lib/*.js"
   ],
-  "exclude": []
+  "exclude": [
+    "src/lib/process-banners.js"
+  ]
 }

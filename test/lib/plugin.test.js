@@ -29,16 +29,17 @@ describe('plugin', () => {
   });
 
   describe('apply()', () => {
-    const banners = [{ entry: './banners/test-banner' }];
+    const defaultBanners = [{ entry: './banners/test-banner' }];
     const defaultExpectedChunkId = 'banners/0';
+    const defaultExpectedChunkFilename = `${defaultExpectedChunkId}.js`;
 
     it('should replace banners placeholder and create lazy chunk', async () => {
       const expectedChunkId = defaultExpectedChunkId;
-      const expectedChunkFilename = `${expectedChunkId}.js`;
+      const expectedChunkFilename = defaultExpectedChunkFilename;
 
       const { assets } = await compile({
         plugins: [
-          new Plugin({ banners })
+          new Plugin({ banners: defaultBanners })
         ]
       });
 
@@ -57,7 +58,7 @@ describe('plugin', () => {
 
       const { assets } = await compile({
         plugins: [
-          new Plugin({ banners, chunkId: customChunkId })
+          new Plugin({ banners: defaultBanners, chunkId: customChunkId })
         ]
       });
 
@@ -73,13 +74,43 @@ describe('plugin', () => {
 
       const { assets } = await compile({
         plugins: [
-          new Plugin({ banners, chunkId })
+          new Plugin({ banners: defaultBanners, chunkId })
         ]
       });
 
       assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`);
       assets.should.contain.property(expectedChunkFilename);
       assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);
+    });
+
+    it('should allow to pass path to banners json file', async () => {
+      const { assets } = await compile({
+        plugins: [
+          new Plugin({
+            banners: './banners.json'
+          })
+        ]
+      });
+
+      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */("${defaultExpectedChunkId}")`);
+      assets.should.contain.property(defaultExpectedChunkFilename);
+      assets[defaultExpectedChunkFilename].source().should.contain(`webpackJsonp(["${defaultExpectedChunkId}"],`);
+    });
+
+    it('should allow to postprocess banners', async () => {
+      const { assets } = await compile({
+        plugins: [
+          new Plugin({
+            banners: defaultBanners,
+            process: banners => {
+              banners.forEach(b => b.id = 'tralala');
+              return banners;
+            }
+          })
+        ]
+      });
+
+      assets['main.js'].source().should.contain('tralala');
     });
   });
 });

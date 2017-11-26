@@ -5,7 +5,8 @@
   ],
   "rules": {
     "dot-location": ["error", "property"],
-    "func-names": "off"
+    "func-names": "off",
+    "no-return-assign": "off"
   },
   "settings": {
     "import/resolver": "webpack"

@@ -1,4 +1,4 @@
-import Rotator from 'webpack-banner-rotator-plugin';
+import Rotator from 'banner-rotator-webpack-plugin';
 
 const rotator = new Rotator();
 

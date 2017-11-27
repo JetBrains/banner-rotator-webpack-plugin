@@ -61,7 +61,7 @@
   },
   "scripts": {
     "build": "yarn build:runtime",
-    "build:runtime": "rm -rf runtime && node scripts/build-runtime",
+    "build:runtime": "rm -rf browser && node scripts/build-runtime",
     "precommit": "yarn lint",
     "commit": "git-cz",
     "commitmsg": "cz-customizable-ghooks",

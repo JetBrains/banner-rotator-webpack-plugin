@@ -1,6 +1,6 @@
 {
   "name": "banner-rotator-webpack-plugin",
-  "version": "0.0.1-2.alpha",
+  "version": "0.1.0",
   "description": "",
   "keywords": [
     "banner",
@@ -62,16 +62,13 @@
   "scripts": {
     "build": "yarn build:runtime",
     "build:runtime": "rm -rf runtime && node scripts/build-runtime",
-
     "precommit": "yarn lint",
     "commit": "git-cz",
     "commitmsg": "cz-customizable-ghooks",
     "lint": "eslint .",
-
     "test": "yarn build && yarn test:plugin && yarn test:runtime",
     "test:plugin": "nyc mocha test/lib/*.test.js",
     "test:runtime": "karma start",
-
     "prerelease": "yarn lint && yarn test",
     "release": "standard-version --no-verify && git push --follow-tags origin master && npm publish",
     "release:dry-run": "yarn prerelease && standard-version --no-verify --dry-run"

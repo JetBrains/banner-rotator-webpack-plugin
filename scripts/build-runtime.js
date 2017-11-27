@@ -13,7 +13,7 @@ const entries = {
   rotator: `${src}/rotator.js`,
   utils: `${src}/utils/index.js`,
   'closed-banners-storage': `${src}/closed-banners-storage.js`,
-  'dispatch-close-event.js': `${src}/dispatch-close-event.js`
+  'dispatch-close-event': `${src}/dispatch-close-event.js`
 };
 
 Object.keys(entries).map(entry => {

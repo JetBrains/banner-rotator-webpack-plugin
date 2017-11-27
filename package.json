@@ -72,7 +72,8 @@
     "test:plugin": "nyc mocha test/lib/*.test.js",
     "test:runtime": "karma start",
 
-    "release": "yarn lint && yarn test && standard-version; git push --follow-tags origin master && npm publish",
+    "prerelease": "yarn lint && yarn test",
+    "release": "standard-version && git push --follow-tags origin master && npm publish",
     "release:dry-run": "yarn lint && yarn test && standard-version --dry-run"
   },
   "config": {

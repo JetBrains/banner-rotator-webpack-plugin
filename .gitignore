@@ -58,7 +58,8 @@ typings/
 .env
 
 # JetBrains IDEs
-.idea
+.idea/*
+!.idea/runConfigurations
 
 # OS Stuff
 .DS_Store

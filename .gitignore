@@ -66,3 +66,4 @@ typings/
 .yo-rc.json
 dist
 browser/*
+.coverage

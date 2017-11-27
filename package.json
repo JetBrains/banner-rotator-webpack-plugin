@@ -73,8 +73,8 @@
     "test:runtime": "karma start",
 
     "prerelease": "yarn lint && yarn test",
-    "release": "standard-version && git push --follow-tags origin master && npm publish",
-    "release:dry-run": "yarn lint && yarn test && standard-version --dry-run"
+    "release": "standard-version --no-verify && git push --follow-tags origin master && npm publish",
+    "release:dry-run": "yarn prerelease && standard-version --no-verify --dry-run"
   },
   "config": {
     "commitizen": {

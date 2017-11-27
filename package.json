@@ -16,8 +16,7 @@
   "main": "src/lib/plugin.js",
   "browser": "browser/rotator.js",
   "files": [
-    "lib",
-    "runtime",
+    "browser",
     "src"
   ],
   "dependencies": {

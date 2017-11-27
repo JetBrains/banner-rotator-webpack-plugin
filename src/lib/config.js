@@ -12,7 +12,7 @@ const fs = require('fs');
  *
  * @property {Promise<Array<Banner>>} [process] Process banners by custom used defined function
  * @property {string} runtimeModule Path to runtime module. Plugin use it to find modules processed by plugin.
- * @property {string} bannersRuntimePlaceholder Placeholder which will be replaced with banners config data with runtime to lazy load banner module.
+ * @property {string} runtimePlaceholder Placeholder which will be replaced with banners config data with runtime to lazy load banner module.
  */
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
     banners: undefined,
     chunkId: 'banners/[id]',
     process: undefined,
-    runtimeModule: path.resolve(__dirname, '../../runtime/rotator.js'),
-    bannersRuntimePlaceholder: '__BANNER_ROTATOR_BANNERS_CONFIG__'
+    runtimeModule: path.resolve(__dirname, '../../browser/rotator.js'),
+    runtimePlaceholder: '__BANNER_ROTATOR_BANNERS_CONFIG__'
   }
 };

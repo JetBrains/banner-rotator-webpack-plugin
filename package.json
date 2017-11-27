@@ -14,7 +14,7 @@
   "bugs": "https://github.com/kisenka/banner-rotator-webpack-plugin/issues",
   "repository": "kisenka/banner-rotator-webpack-plugin",
   "main": "src/lib/plugin.js",
-  "browser": "runtime/rotator.js",
+  "browser": "browser/rotator.js",
   "files": [
     "lib",
     "runtime",

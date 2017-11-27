@@ -31,7 +31,7 @@ module.exports = function (content, sourcemap) {
     .then(banners => (customProcessor ? customProcessor.call(loader, banners) : banners))
     .then(banners => {
       const runtime = RuntimeGenerator.banners(banners, compilerContext);
-      const result = content.replace(config.bannersRuntimePlaceholder, runtime);
+      const result = content.replace(config.runtimePlaceholder, runtime);
       return callback(null, result, sourcemap);
     })
     .catch(callback);

@@ -45,7 +45,7 @@ describe('plugin', () => {
 
       assets['main.js'].source().should
         .contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`)
-        .and.not.contain(defaultConfig.bannersRuntimePlaceholder);
+        .and.not.contain(defaultConfig.runtimePlaceholder);
 
       assets.should.contain.property(expectedChunkFilename);
       assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);

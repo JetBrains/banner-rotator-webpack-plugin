@@ -6,8 +6,8 @@ const commonjsPlugin = require('rollup-plugin-commonjs');
 const bublePlugin = require('rollup-plugin-buble');
 
 const root = path.resolve(__dirname, '..');
-const src = path.resolve(root, 'src/runtime');
-const dest = path.resolve(root, 'runtime');
+const src = path.resolve(root, 'src/browser');
+const dest = path.resolve(root, 'browser');
 
 const entries = {
   rotator: `${src}/rotator.js`,

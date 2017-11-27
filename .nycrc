@@ -10,7 +10,7 @@
     "text",
     "html"
   ],
-  "report-dir": "./coverage",
+  "report-dir": "./.coverage",
   "cache": true,
   "all": true,
   "include": [

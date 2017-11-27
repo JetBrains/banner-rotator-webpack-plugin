@@ -73,7 +73,7 @@
     "test:runtime": "karma start",
 
     "prerelease": "yarn lint && yarn test",
-    "release": "standard-version && git push --follow-tags origin master && npm publish",
+    "release": "standard-version && $GH_TOKEN git push --follow-tags origin master && $NPM_TOKEN npm publish",
     "release:dry-run": "yarn lint && yarn test && standard-version --dry-run"
   },
   "config": {

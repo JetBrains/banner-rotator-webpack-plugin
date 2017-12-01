@@ -1,6 +1,6 @@
 {
   "name": "banner-rotator-webpack-plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "keywords": [
     "banner",
@@ -78,6 +78,6 @@
     "test": "yarn build && yarn test:plugin && yarn test:runtime",
     "test:plugin": "nyc mocha test/lib/*.test.js",
     "test:runtime": "karma start",
-    "release": "yarn lint && yarn test && standard-version --message 'chore(release): %s [skip ci]' --no-verify && ci-publish && git push --follow-tags origin master"
+    "release": "yarn lint && yarn test && standard-version --message 'chore(release): %s [skip ci]' --no-verify"
   }
 }

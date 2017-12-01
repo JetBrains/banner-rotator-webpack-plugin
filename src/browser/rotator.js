@@ -79,6 +79,10 @@ export default class BannerRotator {
     }
   }
 
+  reset() {
+    this.closedBannersStorage.clear();
+  }
+
   /**
    * Detach close banner event and destroy closed banners storage
    */

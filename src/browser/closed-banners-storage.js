@@ -68,6 +68,14 @@ export default class ClosedBannersStorage {
    * @public
    * @api
    */
+  clear() {
+    this.write([]);
+  }
+
+  /**
+   * @public
+   * @api
+   */
   destroy() {
     try {
       window.localStorage.removeItem(this.storageKey);

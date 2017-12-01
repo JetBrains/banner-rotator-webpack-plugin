@@ -25,6 +25,10 @@ module.exports = function (content, sourcemap) {
   const bannersOptionIsPath = typeof bannersOption === 'string';
   const bannersFilePath = bannersOptionIsPath ? path.resolve(compilerContext, bannersOption) : null;
 
+  if (bannersOptionIsPath) {
+    loader.addDependency(bannersFilePath);
+  }
+
   return Promise.resolve()
     .then(() => (bannersOptionIsPath ? fs.readJson(bannersFilePath) : bannersOption))
     .then(banners => processBanners(banners))

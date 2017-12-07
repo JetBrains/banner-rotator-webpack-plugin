@@ -6,8 +6,15 @@ import { parseDate } from './index';
  */
 export default function normalizeBanners(banners) {
   banners.forEach(banner => {
-    banner.start = banner.start ? parseDate(banner.start) : undefined;
-    banner.end = banner.end ? parseDate(banner.end) : undefined;
+    const { startDate, endDate } = banner;
+
+    if (startDate) {
+      banner.startDate = parseDate(startDate);
+    }
+
+    if (endDate) {
+      banner.endDate = parseDate(endDate);
+    }
   });
 
   return banners;

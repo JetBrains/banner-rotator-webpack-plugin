@@ -28,7 +28,7 @@ function processBanners(banners) {
  * @param {Array<string>} fields
  * @return {string}
  */
-function generateId(banner, fields = ['entry', 'id', 'start', 'end', 'locations', 'countries']) {
+function generateId(banner, fields = ['entry', 'id', 'startDate', 'endDate']) {
   const data = fields
     .filter(field => typeof banner[field] !== 'undefined')
     .map(field => JSON.stringify(banner[field]))

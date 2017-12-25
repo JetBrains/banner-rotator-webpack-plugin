@@ -30,7 +30,7 @@
     "webpack": ">= 2"
   },
   "devDependencies": {
-    "@kisenka/eslint-config": "0.0.2",
+    "@kisenka/eslint-config": "^1.0.1",
     "bluebird": "^3.5.1",
     "buble-loader": "^0.4.1",
     "chai": "4.1.2",

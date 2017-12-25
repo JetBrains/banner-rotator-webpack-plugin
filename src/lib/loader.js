@@ -6,6 +6,7 @@ const { NAMESPACE } = require('./config');
 const RuntimeGenerator = require('./runtime-generator');
 const processBanners = require('./process-banners');
 
+// eslint-disable-next-line func-names
 module.exports = function (content, sourcemap) {
   /* istanbul ignore else */
   if (this.cacheable) {

@@ -3,11 +3,6 @@
   "extends": [
     "@kisenka/eslint-config"
   ],
-  "rules": {
-    "dot-location": ["error", "property"],
-    "func-names": "off",
-    "no-return-assign": "off"
-  },
   "settings": {
     "import/resolver": "webpack"
   },
@@ -23,11 +18,7 @@
       "env": {
         "mocha": true
       },
-      "parserOptions": {
-        "ecmaVersion": 2017
-      },
       "rules": {
-        "no-unused-expressions": "off",
         "no-magic-numbers": "off"
       }
     }

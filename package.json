@@ -40,6 +40,7 @@
     "cz-customizable": "5.2.0",
     "cz-customizable-ghooks": "1.5.0",
     "eslint": "4.8.0",
+    "glob": "^7.1.2",
     "husky": "0.14.3",
     "karma": "^1.7.1",
     "karma-chai-plugins": "^0.9.0",

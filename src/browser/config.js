@@ -1,4 +1,2 @@
-export default {
-  closeEventName: 'banner-rotator-banner-close',
-  closedBannersStorageKey: 'banner-rotator-closed-banners'
-};
+export const closeEventName = 'banner-rotator-banner-close';
+export const closedBannersStorageKey = 'banner-rotator-closed-banners';

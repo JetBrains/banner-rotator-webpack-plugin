@@ -1,14 +1,15 @@
+import Rotator from 'banner-rotator-webpack-plugin/browser/rotator';
+
 import {
-  isRangeContainsDate,
   createMatcher,
   createMultiMatcher
-} from 'banner-rotator-webpack-plugin/browser/utils';
+} from 'banner-rotator-webpack-plugin/browser/glob-matcher';
 
-describe('runtime/utils', () => {
+describe('utils', () => {
   describe('isRangeContainsDate', () => {
     it('should work', () => {
       // eslint-disable-next-line no-magic-numbers
-      const res = isRangeContainsDate(new Date(2010), new Date(2012), new Date(2011));
+      const res = Rotator.isRangeContainsDate(new Date(2010), new Date(2012), new Date(2011));
       res.should.be.true;
     });
   });

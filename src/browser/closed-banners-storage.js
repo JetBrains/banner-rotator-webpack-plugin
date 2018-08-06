@@ -1,10 +1,10 @@
-import defaultConfig from './config';
+import { closedBannersStorageKey } from './config';
 
 /**
  * localStorage based storage to keep info about closed banners
  */
 export default class ClosedBannersStorage {
-  constructor(key = defaultConfig.closedBannersStorageKey) {
+  constructor(key = closedBannersStorageKey) {
     this.storageKey = key;
 
     if (this.getAll() === null) {

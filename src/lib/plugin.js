@@ -45,41 +45,86 @@ class BannerRotatorPlugin {
     return compiler;
   }
 
+  getRuntimeModule(compilation) {
+    return compilation.modules
+      .find(m => m.loaders
+        .some(({ loader }) => loader === LOADER_PATH)
+      );
+  }
+
   /**
    * Return banners chunks
    * @param {Array<Chunk>} chunks
    * @return {Array<Chunk>}
    */
-  getChunks(chunks) {
-    const runtimeModule = this.config.runtimeModule;
-    return chunks.filter(chunk => {
-      const resources = chunk.origins.map(origin => origin.module.resource);
-      return resources.some(resource => resource === runtimeModule);
-    });
+  getBannersChunks(chunks, compilation) {
+    const runtimeModule = this.getRuntimeModule(compilation);
+    const runtimeModulePath = this.config.runtimeModule;
+
+    if (compilation.hooks) {
+      const asyncChunks = chunks
+        .map(chunk => Array.from(chunk.getAllAsyncChunks().values()))
+        .reduce((acc, chunkChunks) => acc.concat(chunkChunks), []);
+
+      const bannersChunks = asyncChunks.filter(chunk => chunk.getModules()
+        .some(m => m.reasons
+          .some(reason => reason.module === runtimeModule)
+        ));
+
+      return bannersChunks;
+    }
+
+    return chunks.filter(chunk => chunk.origins
+      .map(origin => origin.module.resource)
+      .some(resource => resource === runtimeModulePath));
   }
 
   apply(compiler) {
-    const config = this.config;
-
     this.addLoaderForRuntime(compiler);
 
-    compiler.plugin('this-compilation', compilation => {
-      compilation.plugin('normal-module-loader', loaderContext => {
-        loaderContext[NAMESPACE] = { config };
+    if (compiler.hooks) {
+      compiler.hooks.emit.tapAsync(NAMESPACE, (compilation, done) => {
+        done();
       });
 
-      compilation.plugin('optimize-chunk-ids', () => {
-        if (!config.chunkId) {
-          return;
-        }
+      compiler.hooks.thisCompilation.tap(NAMESPACE, compilation => {
+        compilation.hooks.normalModuleLoader
+          .tap(NAMESPACE, loaderCtx => this.hookNormalModuleLoader(loaderCtx));
 
-        this.getChunks(compilation.chunks).forEach(chunk => {
-          // Rename banner chunk id
-          const id = compilation.getPath(config.chunkId, { chunk });
-          chunk.id = id;
-          chunk.ids = [id];
+        compilation.hooks.afterOptimizeChunkIds
+          .tap(NAMESPACE, chunks => {
+            this.hookOptimizeChunkIds(chunks, compilation);
+          });
+      });
+    } else {
+      compiler.plugin('this-compilation', compilation => {
+        compilation.plugin('normal-module-loader', loaderCtx => {
+          this.hookNormalModuleLoader(loaderCtx);
+        });
+
+        compilation.plugin('optimize-chunk-ids', chunks => {
+          this.hookOptimizeChunkIds(chunks, compilation);
         });
       });
+    }
+  }
+
+  hookNormalModuleLoader(loaderContext) {
+    loaderContext[NAMESPACE] = this;
+  }
+
+  hookOptimizeChunkIds(chunks, compilation) {
+    const config = this.config;
+
+    if (!config.chunkId) {
+      return;
+    }
+
+    this.getBannersChunks(chunks, compilation).forEach(chunk => {
+      // Rename banner chunk id
+      const id = compilation.getPath(config.chunkId, { chunk });
+      chunk.id = id;
+      chunk.ids = [id];
     });
   }
 }

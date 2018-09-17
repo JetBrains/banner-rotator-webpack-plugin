@@ -12,9 +12,18 @@ const utils = require('../utils');
 const { createCompiler } = utils;
 
 const compile = config => {
-  const merged = webpackMerge(webpackConfig, { entry: './entry' }, config);
+  const merged = webpackMerge(webpackConfig, {
+    entry: './entry',
+    mode: 'development',
+    devtool: false
+  }, config);
   return utils.compile(merged);
 };
+
+function containChunkIdRuntime(source, chunkId, asNumber) {
+  const chunkExpr = asNumber ? chunkId : `"${chunkId}"`;
+  return source.should.contain(`__webpack_require__.e(/*! require.ensure */ ${chunkExpr}`);
+}
 
 describe('plugin', () => {
   describe('prepare()', () => {
@@ -43,12 +52,11 @@ describe('plugin', () => {
         ]
       });
 
-      assets['main.js'].source().should
-        .contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`)
-        .and.not.contain(defaultConfig.runtimePlaceholder);
+      const source = assets['main.js'].source();
 
+      containChunkIdRuntime(source, expectedChunkId);
+      source.should.and.not.contain(defaultConfig.runtimePlaceholder);
       assets.should.contain.property(expectedChunkFilename);
-      assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);
     });
 
     it('should allow to override banner chunk id', async () => {
@@ -62,9 +70,10 @@ describe('plugin', () => {
         ]
       });
 
-      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */("${expectedChunkId}")`);
+      const source = assets['main.js'].source();
+
+      containChunkIdRuntime(source, expectedChunkId);
       assets.should.contain.property(expectedChunkFilename);
-      assets[expectedChunkFilename].source().should.contain(`webpackJsonp(["${expectedChunkId}"],`);
     });
 
     it('should allow to pass falsy value as chunkId and dont\'t touch chunk id then', async () => {
@@ -78,9 +87,10 @@ describe('plugin', () => {
         ]
       });
 
-      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */(${expectedChunkId})`);
+      const source = assets['main.js'].source();
+
+      containChunkIdRuntime(source, expectedChunkId, true);
       assets.should.contain.property(expectedChunkFilename);
-      assets[expectedChunkFilename].source().should.contain(`webpackJsonp([${expectedChunkId}],`);
     });
 
     it('should allow to pass path to banners json file', async () => {
@@ -92,9 +102,10 @@ describe('plugin', () => {
         ]
       });
 
-      assets['main.js'].source().should.contain(`__webpack_require__.e/* require.ensure */("${defaultExpectedChunkId}")`);
+      const source = assets['main.js'].source();
+
+      containChunkIdRuntime(source, defaultExpectedChunkId);
       assets.should.contain.property(defaultExpectedChunkFilename);
-      assets[defaultExpectedChunkFilename].source().should.contain(`webpackJsonp(["${defaultExpectedChunkId}"],`);
     });
 
     it('should allow to postprocess banners', async () => {
